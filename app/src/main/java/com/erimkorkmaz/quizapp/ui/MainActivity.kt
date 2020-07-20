@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var auth : FirebaseAuth
+    private lateinit var auth: FirebaseAuth
     private val categoriesFragment = CategoriesFragment()
     private val leaderboardFragment = LeaderboardFragment()
 
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
                     title = "Categories"
                     categoriesFragment
                 }
-                R.id.navigation_leaderboard ->{
+                R.id.navigation_leaderboard -> {
                     title = "Leaderboard"
                     leaderboardFragment
                 }
@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         if (savedInstanceState == null)
             switchToFragment(categoriesFragment)
+        checkConnectivity()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

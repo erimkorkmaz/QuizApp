@@ -13,6 +13,7 @@ object RemoteRepository : Repository {
 
     private const val AMOUNT = "10"
     private const val TYPE = "multiple"
+    private const val ENCODING_TYPE = "base64"
 
     private val api = Injection.provideService()
 
@@ -38,19 +39,20 @@ object RemoteRepository : Repository {
     override fun getQuestions(categoryId: String): LiveData<List<Question>> {
         val liveData = MutableLiveData<List<Question>>()
 
-        api.getQuestions(AMOUNT, categoryId, TYPE).enqueue(object : Callback<QuestionsResponse> {
-            override fun onFailure(call: Call<QuestionsResponse>, t: Throwable) {
-            }
-
-            override fun onResponse(
-                call: Call<QuestionsResponse>,
-                response: Response<QuestionsResponse>
-            ) {
-                if (response != null) {
-                    liveData.value = response.body()?.results
+        api.getQuestions(AMOUNT, categoryId, TYPE)
+            .enqueue(object : Callback<QuestionsResponse> {
+                override fun onFailure(call: Call<QuestionsResponse>, t: Throwable) {
                 }
-            }
-        })
+
+                override fun onResponse(
+                    call: Call<QuestionsResponse>,
+                    response: Response<QuestionsResponse>
+                ) {
+                    if (response != null) {
+                        liveData.value = response.body()?.results
+                    }
+                }
+            })
         return liveData
     }
 }

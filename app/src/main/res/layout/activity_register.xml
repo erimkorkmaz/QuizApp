@@ -21,6 +21,8 @@
             android:id="@+id/text_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/secondaryLightColor"
+            android:textColorHint="@color/itemBackground"
             android:gravity="center"
             android:hint="username" />
 
@@ -28,6 +30,8 @@
             android:id="@+id/text_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/secondaryLightColor"
+            android:textColorHint="@color/itemBackground"
             android:gravity="center"
             android:hint="email"
             android:inputType="textEmailAddress" />
@@ -36,13 +40,15 @@
             android:id="@+id/text_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/secondaryLightColor"
+            android:textColorHint="@color/itemBackground"
             android:gravity="center"
             android:hint="password"
             android:inputType="textPassword" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_register"
-            android:background="@color/secondaryDarkColor"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"

@@ -2,16 +2,16 @@ package com.erimkorkmaz.quizapp.ui
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.ViewModelProvider
 import com.erimkorkmaz.quizapp.R
+import com.erimkorkmaz.quizapp.StringUtils.base64Decode
+import com.erimkorkmaz.quizapp.StringUtils.htmlDecode
 import com.erimkorkmaz.quizapp.model.Category
 import com.erimkorkmaz.quizapp.model.Question
 import com.erimkorkmaz.quizapp.viewmodel.QuizViewModel
@@ -26,7 +26,7 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var currentQuestion: Question
     private lateinit var buttons: List<Button>
     private lateinit var correctButton: Button
-    private lateinit var timer : CountDownTimer
+    private lateinit var timer: CountDownTimer
 
     private var score = 0
     private var questionId = 0
@@ -84,7 +84,7 @@ class QuizActivity : AppCompatActivity() {
         text_score.text = "Score : $score"
         text_question_number.text = "${(questionId + 1)} / ${questions?.size}"
         currentQuestion = questions[questionId]
-        text_question.text = currentQuestion.questions
+        text_question.text = currentQuestion.questions.htmlDecode()
         mixOptions()
         questionId++
     }
@@ -96,31 +96,31 @@ class QuizActivity : AppCompatActivity() {
         for (i in buttons.indices) {
             if (i == correctOptionNum) {
                 correctButton = this.buttons[i]
-                buttons[i].text = currentQuestion.correctAnswer
+                buttons[i].text = currentQuestion.correctAnswer.htmlDecode()
             } else {
-                this.buttons[i].text = currentQuestion.incorrectAnswers[j]
+                this.buttons[i].text = currentQuestion.incorrectAnswers[j].htmlDecode()
                 j++
             }
         }
     }
 
     private fun checkAnswer(button: Button, answer: String) {
-        if (currentQuestion.correctAnswer == answer) {
-            score+=10
+        if (currentQuestion.correctAnswer.htmlDecode() == answer) {
+            score += 10
             text_score.text = "Score : $score"
-            button.background.setTint(resources.getColor(R.color.secondaryDarkColor,theme))
+            button.background.setTint(resources.getColor(R.color.secondaryDarkColor, theme))
         } else {
-            button.background.setTint(resources.getColor(R.color.magenta,theme))
-            correctButton.background.setTint(resources.getColor(R.color.secondaryDarkColor,theme))
+            button.background.setTint(resources.getColor(R.color.magenta, theme))
+            correctButton.background.setTint(resources.getColor(R.color.secondaryDarkColor, theme))
         }
 
         val handler = Handler()
         handler.postDelayed({
-            button.background.setTint(resources.getColor(R.color.itemBackground,theme))
+            button.background.setTint(resources.getColor(R.color.itemBackground, theme))
             correctButton.background.setTint(resources.getColor(R.color.itemBackground, theme))
             timer.cancel()
             goToNextQuestion()
-        },500)
+        }, 500)
     }
 
     private fun goToNextQuestion() {
@@ -157,7 +157,7 @@ class QuizActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    private fun showProgress(){
+    private fun showProgress() {
         progress_quiz.visibility = View.VISIBLE
         progress_quiz.setAnimation("loading.json")
         progress_quiz.playAnimation()
