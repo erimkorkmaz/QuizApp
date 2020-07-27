@@ -37,9 +37,24 @@ platform :android do
     )
   end
 
+  desc "Submit a new Beta Build to Appcenter App Distribution"
+    lane :upload_appcenter do
+      build
+
+     appcenter_upload(
+         api_token: "9c7ae0fcba7d73da2b7fc1649705e560b27b0f72",
+         owner_name: "erimkorkmaz-gmail.com",
+         owner_type: "user", # Default is user - set to organization for appcenter organizations
+         app_name: "QuizApp",
+         file: "app/build/outputs/apk/release/app-release-unsigned.apk",
+         notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
+  )
+    end
+
   desc "Deploy a new version to the Google Play"
   lane :deploy do
     gradle(task: "clean assembleRelease")
     upload_to_play_store
   end
+
 end
