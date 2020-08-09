@@ -76,17 +76,17 @@ class LeaderboardFragment : Fragment(), CategoryClickListener {
                             )
                             categoryAdapter.notifyDataSetChanged()
                             leaderboardAdapter.notifyDataSetChanged()
-                            hideProgress()
                         }
                     }
             }
+            hideProgress()
         }.addOnFailureListener { exception ->
             Log.d("TAG", "get failed with ", exception)
         }
         return userList
     }
 
-    private fun showProgress(){
+    private fun showProgress() {
         progress_leaderboard.visibility = View.VISIBLE
         progress_leaderboard.setAnimation("loading.json")
         progress_leaderboard.playAnimation()

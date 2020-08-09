@@ -5,11 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.erimkorkmaz.quizapp.R
+import com.erimkorkmaz.quizapp.StringUtils
 import com.erimkorkmaz.quizapp.StringUtils.base64Decode
 import com.erimkorkmaz.quizapp.StringUtils.htmlDecode
 import com.erimkorkmaz.quizapp.model.Category
@@ -26,7 +28,7 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var currentQuestion: Question
     private lateinit var buttons: List<Button>
     private lateinit var correctButton: Button
-    private lateinit var timer: CountDownTimer
+    private var timer: CountDownTimer? = null
 
     private var score = 0
     private var questionId = 0
@@ -44,6 +46,7 @@ class QuizActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
+        setSupportActionBar(toolbar_quiz)
 
         category = intent.getParcelableExtra(CATEGORY_ID)
         quizViewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
@@ -51,8 +54,10 @@ class QuizActivity : AppCompatActivity() {
         if (::questions.isInitialized.not()) {
             loadData()
         }
-
-
+        val actionBar = supportActionBar
+        val toolbarTitle = StringUtils.formatCategoryNames(category.name)
+        actionBar?.title = toolbarTitle
+        actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun loadData() {
@@ -118,7 +123,7 @@ class QuizActivity : AppCompatActivity() {
         handler.postDelayed({
             button.background.setTint(resources.getColor(R.color.itemBackground, theme))
             correctButton.background.setTint(resources.getColor(R.color.itemBackground, theme))
-            timer.cancel()
+            timer?.cancel()
             goToNextQuestion()
         }, 500)
     }
@@ -151,8 +156,16 @@ class QuizActivity : AppCompatActivity() {
         }.start()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == android.R.id.home){
+            onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onBackPressed() {
-        timer.cancel()
+        timer?.cancel()
         finish()
         super.onBackPressed()
     }

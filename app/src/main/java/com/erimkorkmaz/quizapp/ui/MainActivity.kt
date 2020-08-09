@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.erimkorkmaz.quizapp.R
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
@@ -26,15 +27,16 @@ class MainActivity : AppCompatActivity() {
     var isConnected: Boolean = true
     val compositeDisposable = CompositeDisposable()
 
-
     private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             val fragment = when (item.itemId) {
                 R.id.navigation_categories -> {
+                    actionBar?.title = "Categories"
                     title = "Categories"
                     categoriesFragment
                 }
                 R.id.navigation_leaderboard -> {
+                    actionBar?.title = "Leaderboard"
                     title = "Leaderboard"
                     leaderboardFragment
                 }
@@ -47,6 +49,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+        setSupportActionBar(main_toolbar)
         auth = Firebase.auth
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         if (savedInstanceState == null)
