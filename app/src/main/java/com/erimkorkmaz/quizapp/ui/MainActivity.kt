@@ -8,6 +8,8 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.erimkorkmaz.quizapp.R
+import com.erimkorkmaz.quizapp.utils.toolbarIcon
+import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -31,12 +33,12 @@ class MainActivity : AppCompatActivity() {
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             val fragment = when (item.itemId) {
                 R.id.navigation_categories -> {
-                    actionBar?.title = "Categories"
+                    toolbarTitle("CATEGORIES")
                     title = "Categories"
                     categoriesFragment
                 }
                 R.id.navigation_leaderboard -> {
-                    actionBar?.title = "Leaderboard"
+                   toolbarTitle("LEADERBOARD")
                     title = "Leaderboard"
                     leaderboardFragment
                 }
@@ -49,14 +51,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        setSupportActionBar(main_toolbar)
+        toolbarTitle("CATEGORIES")
         auth = Firebase.auth
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         if (savedInstanceState == null)
             switchToFragment(categoriesFragment)
         checkConnectivity()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater = menuInflater

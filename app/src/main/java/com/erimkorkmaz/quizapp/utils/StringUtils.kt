@@ -1,4 +1,4 @@
-package com.erimkorkmaz.quizapp
+package com.erimkorkmaz.quizapp.utils
 
 import android.util.Base64
 import androidx.core.text.HtmlCompat
@@ -13,13 +13,5 @@ object StringUtils {
         }
         val index = text.indexOf(":")
         return text.drop(index + 1)
-    }
-
-    fun String.htmlDecode() : String {
-        return HtmlCompat.fromHtml(this, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
-    }
-
-    fun String.base64Decode(): String {
-        return Base64.decode(this, Base64.DEFAULT).toString(charset("UTF-8"))
     }
 }

@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     android:background="@color/primaryLightColor">
 
+    <include
+        android:id="@+id/included_app_bar"
+        layout="@layout/layout_common_toolbar"
+        app:layout_constraintBottom_toTopOf="@id/text_gameOver"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_gameOver"
         android:layout_width="wrap_content"
@@ -16,7 +24,7 @@
         app:layout_constraintBottom_toTopOf="@+id/layout_result"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/included_app_bar" />
 
 
     <LinearLayout

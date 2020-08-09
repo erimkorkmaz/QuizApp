@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     android:background="@color/primaryLightColor">
 
+    <include
+        android:id="@+id/included_app_bar"
+        layout="@layout/layout_common_toolbar"
+        app:layout_constraintBottom_toTopOf="@id/layout_register"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/layout_register"
         android:layout_width="match_parent"
@@ -15,36 +23,36 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/included_app_bar">
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondaryLightColor"
-            android:textColorHint="@color/itemBackground"
             android:gravity="center"
-            android:hint="username" />
+            android:hint="username"
+            android:textColor="@color/secondaryLightColor"
+            android:textColorHint="@color/itemBackground" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondaryLightColor"
-            android:textColorHint="@color/itemBackground"
             android:gravity="center"
             android:hint="email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColor="@color/secondaryLightColor"
+            android:textColorHint="@color/itemBackground" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondaryLightColor"
-            android:textColorHint="@color/itemBackground"
             android:gravity="center"
             android:hint="password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="@color/secondaryLightColor"
+            android:textColorHint="@color/itemBackground" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_register"

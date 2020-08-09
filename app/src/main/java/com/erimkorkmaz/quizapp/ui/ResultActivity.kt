@@ -7,12 +7,15 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.model.Category
+import com.erimkorkmaz.quizapp.utils.toolbarIcon
+import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_result.*
+import kotlinx.android.synthetic.main.layout_common_toolbar.view.*
 
 class ResultActivity : AppCompatActivity() {
 
@@ -40,6 +43,13 @@ class ResultActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         db = Firebase.firestore
+
+        toolbarTitle("RESULT")
+        toolbarIcon(R.drawable.ic_baseline_arrow_back_24)
+        included_app_bar.toolbar_common.setNavigationOnClickListener {
+            onBackPressed()
+            finish()
+        }
 
         category = intent.getParcelableExtra(CATEGORY_ID)
         score = intent.getIntExtra(SCORE, score)

@@ -11,13 +11,18 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.erimkorkmaz.quizapp.R
-import com.erimkorkmaz.quizapp.StringUtils
-import com.erimkorkmaz.quizapp.StringUtils.base64Decode
-import com.erimkorkmaz.quizapp.StringUtils.htmlDecode
+import com.erimkorkmaz.quizapp.utils.StringUtils
+
 import com.erimkorkmaz.quizapp.model.Category
 import com.erimkorkmaz.quizapp.model.Question
+import com.erimkorkmaz.quizapp.utils.htmlDecode
+import com.erimkorkmaz.quizapp.utils.toolbarIcon
+import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.erimkorkmaz.quizapp.viewmodel.QuizViewModel
 import kotlinx.android.synthetic.main.activity_quiz.*
+import kotlinx.android.synthetic.main.activity_quiz.included_app_bar
+import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.layout_common_toolbar.view.*
 import java.util.*
 
 class QuizActivity : AppCompatActivity() {
@@ -46,7 +51,6 @@ class QuizActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
-        setSupportActionBar(toolbar_quiz)
 
         category = intent.getParcelableExtra(CATEGORY_ID)
         quizViewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
@@ -54,10 +58,12 @@ class QuizActivity : AppCompatActivity() {
         if (::questions.isInitialized.not()) {
             loadData()
         }
-        val actionBar = supportActionBar
-        val toolbarTitle = StringUtils.formatCategoryNames(category.name)
-        actionBar?.title = toolbarTitle
-        actionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbarIcon(R.drawable.ic_baseline_arrow_back_24)
+        toolbarTitle(StringUtils.formatCategoryNames(category.name.toUpperCase()))
+
+        included_app_bar.toolbar_common.setNavigationOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun loadData() {

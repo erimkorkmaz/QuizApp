@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.erimkorkmaz.quizapp.R
-import com.erimkorkmaz.quizapp.StringUtils
+import com.erimkorkmaz.quizapp.utils.StringUtils
 import kotlinx.android.synthetic.main.item_categories.view.*
 import kotlinx.android.synthetic.main.list_item_leaderboard.view.*
 import kotlin.collections.ArrayList

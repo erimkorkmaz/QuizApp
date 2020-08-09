@@ -6,19 +6,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/primaryLightColor">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_quiz"
-        style="@style/AppTheme"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primaryColor"
-        android:fontFamily="@font/manropemedium"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:titleTextColor="@color/secondaryColor"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/layout_time_score"
+    <include
+        android:id="@+id/included_app_bar"
+        layout="@layout/layout_common_toolbar"
+        app:layout_constraintBottom_toTopOf="@id/layout_time_score"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layout_time_score"
@@ -29,7 +23,7 @@
         app:layout_constraintBottom_toTopOf="@+id/text_question_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_quiz">
+        app:layout_constraintTop_toBottomOf="@id/included_app_bar">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_score"

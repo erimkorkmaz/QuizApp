@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.erimkorkmaz.quizapp.R
+import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -39,6 +40,11 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        toolbarTitle("LOGIN")
     }
 
     private fun login() {

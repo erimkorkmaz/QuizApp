@@ -7,6 +7,8 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.erimkorkmaz.quizapp.R
+import com.erimkorkmaz.quizapp.utils.toolbarIcon
+import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
@@ -14,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.layout_common_toolbar.view.*
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -26,9 +29,18 @@ class RegisterActivity : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
 
+        included_app_bar.toolbar_common.setNavigationOnClickListener {
+            finish()
+        }
         button_register.setOnClickListener {
             register()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        toolbarTitle("REGISTER")
+        toolbarIcon(R.drawable.ic_baseline_arrow_back_24)
     }
 
     private fun register() {

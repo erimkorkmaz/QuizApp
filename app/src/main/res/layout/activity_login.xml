@@ -5,8 +5,16 @@
     android:layout_height="match_parent"
     android:background="@color/primaryLightColor">
 
+    <include
+        android:id="@+id/included_app_bar"
+        layout="@layout/layout_common_toolbar"
+        app:layout_constraintBottom_toTopOf="@id/layout_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <LinearLayout
-        android:id="@+id/layout_register"
+        android:id="@+id/layout_login"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="50dp"
@@ -15,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/included_app_bar">
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_email"
