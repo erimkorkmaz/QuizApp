@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.utils.toolbarIcon
+import com.erimkorkmaz.quizapp.utils.toolbarRightIcon
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -19,6 +21,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_common_toolbar.*
+import kotlinx.android.synthetic.main.layout_common_toolbar.view.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         if (savedInstanceState == null)
             switchToFragment(categoriesFragment)
+        setSupportActionBar(toolbar_common)
         checkConnectivity()
     }
 

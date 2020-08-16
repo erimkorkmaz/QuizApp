@@ -2,10 +2,13 @@ package com.erimkorkmaz.quizapp.utils
 
 import android.app.Activity
 import android.util.Base64
+import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.FragmentActivity
 import com.erimkorkmaz.quizapp.R
 
 fun String.htmlDecode() : String {
@@ -26,4 +29,11 @@ fun Activity.toolbarIcon(drawableId: Int) {
     val toolbarCommon: Toolbar = this.findViewById(R.id.toolbar_common)
     val drawable = ContextCompat.getDrawable(applicationContext, drawableId)
     toolbarCommon.navigationIcon = drawable
+}
+
+fun FragmentActivity.toolbarRightIcon(drawableId: Int) {
+    val toolbarRightIcon: AppCompatImageView = findViewById(R.id.image_toolbar_right_common)
+    toolbarRightIcon.visibility = View.VISIBLE
+    val drawable = ContextCompat.getDrawable(this, drawableId)
+    toolbarRightIcon.setImageDrawable(drawable)
 }

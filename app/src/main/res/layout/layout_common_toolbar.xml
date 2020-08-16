@@ -23,6 +23,15 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_toolbar_right_common"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="16dp"
+            app:srcCompat="@drawable/ic_options"
+            android:visibility="gone"/>
+
     </androidx.appcompat.widget.Toolbar>
 
 </com.google.android.material.appbar.AppBarLayout>
