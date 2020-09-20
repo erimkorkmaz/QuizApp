@@ -4,12 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.erimkorkmaz.quizapp.ModelPreferencesManager
 import com.erimkorkmaz.quizapp.R
+import com.erimkorkmaz.quizapp.model.User
+import com.erimkorkmaz.quizapp.utils.toolbarIcon
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.layout_common_toolbar.view.*
 
 class LoginActivity : AppCompatActivity() {
 
@@ -21,49 +25,44 @@ class LoginActivity : AppCompatActivity() {
 
         auth = Firebase.auth
 
+        included_app_bar.toolbar_common.setNavigationOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
         button_login.setOnClickListener {
             login()
-        }
-
-        button_signUp.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-        }
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
         }
     }
 
     override fun onResume() {
         super.onResume()
         toolbarTitle("LOGIN")
+        toolbarIcon(R.drawable.ic_baseline_arrow_back_24)
     }
 
     private fun login() {
         val email = text_email.text.toString()
         val password = text_password.text.toString()
         if (email.isEmpty()) {
-            Toast.makeText(this,"Email is empty", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Email is empty", Toast.LENGTH_SHORT).show()
             return
         }
         if (password.isEmpty()) {
-            Toast.makeText(this,"Password is empty", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Password is empty", Toast.LENGTH_SHORT).show()
             return
         }
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    val user = User(
+                        auth.currentUser!!.uid,
+                        auth.currentUser!!.email.toString(),
+                        auth.currentUser?.displayName.toString()
+                    )
+                    ModelPreferencesManager.put(user, "KEY_USER")
                     val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
-                    finish()
                 }
             }.addOnFailureListener { exception ->
                 Toast.makeText(

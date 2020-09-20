@@ -6,17 +6,16 @@ import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.erimkorkmaz.quizapp.ModelPreferencesManager
 import com.erimkorkmaz.quizapp.R
-import com.erimkorkmaz.quizapp.utils.toolbarIcon
+import com.erimkorkmaz.quizapp.model.User
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.android.synthetic.main.layout_common_toolbar.view.*
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -29,18 +28,28 @@ class RegisterActivity : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
 
-        included_app_bar.toolbar_common.setNavigationOnClickListener {
-            finish()
-        }
         button_register.setOnClickListener {
             register()
+        }
+
+        text_have_account.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
     }
 
     override fun onResume() {
         super.onResume()
         toolbarTitle("REGISTER")
-        toolbarIcon(R.drawable.ic_baseline_arrow_back_24)
     }
 
     private fun register() {
@@ -76,8 +85,8 @@ class RegisterActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     saveUserToDb(username)
                     val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
-                    finish()
                 }
             }.addOnFailureListener { exception ->
                 Toast.makeText(
@@ -88,11 +97,10 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
-    private fun saveUserToDb(username : String) {
-        val userData = hashMapOf<String, Any>()
-        userData["username"] = username
-        userData["email"] = auth.currentUser!!.email.toString()
-        db.collection("Users").document(auth.currentUser!!.uid).set(userData)
+    private fun saveUserToDb(username: String) {
+        val user = User(auth.currentUser!!.uid, auth.currentUser!!.email.toString(), username)
+        ModelPreferencesManager.put(user, "KEY_USER")
+        db.collection("Users").document(auth.currentUser!!.uid).set(user)
             .addOnSuccessListener { Log.d("TAG", "DocumentSnapshot successfully written!") }
             .addOnFailureListener { e -> Log.w("TAG", "Error writing document", e) }
     }

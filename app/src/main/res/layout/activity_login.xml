@@ -11,13 +11,16 @@
         app:layout_constraintBottom_toTopOf="@id/layout_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/layout_login"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="50dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,48 +31,31 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/rounded_edit_text"
             android:gravity="center"
-            android:textColor="@color/secondaryLightColor"
-            android:textColorHint="@color/itemBackground"
             android:hint="email"
             android:inputType="textEmailAddress" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondaryLightColor"
-            android:textColorHint="@color/itemBackground"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_edit_text"
             android:gravity="center"
             android:hint="password"
             android:inputType="textPassword" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_login"
-            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_register_button"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
             android:text="Sign In" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/secondaryLightColor"
-            android:text="OR" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button_signUp"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Sign Up"
-            android:textSize="14sp"
-
-            />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

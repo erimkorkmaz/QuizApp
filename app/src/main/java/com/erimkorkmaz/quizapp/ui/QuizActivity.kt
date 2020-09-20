@@ -1,6 +1,8 @@
 package com.erimkorkmaz.quizapp.ui
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,17 +13,15 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.erimkorkmaz.quizapp.R
-import com.erimkorkmaz.quizapp.utils.StringUtils
-
+import com.erimkorkmaz.quizapp.R.color
 import com.erimkorkmaz.quizapp.model.Category
 import com.erimkorkmaz.quizapp.model.Question
+import com.erimkorkmaz.quizapp.utils.StringUtils
 import com.erimkorkmaz.quizapp.utils.htmlDecode
 import com.erimkorkmaz.quizapp.utils.toolbarIcon
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.erimkorkmaz.quizapp.viewmodel.QuizViewModel
 import kotlinx.android.synthetic.main.activity_quiz.*
-import kotlinx.android.synthetic.main.activity_quiz.included_app_bar
-import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.view.*
 import java.util.*
 
@@ -92,6 +92,10 @@ class QuizActivity : AppCompatActivity() {
 
     private fun setupView() {
         buttons = listOf(button_answer1, button_answer2, button_answer3, button_answer4)
+        for (button in buttons) {
+            button.isClickable = true
+            button.setBackgroundResource(R.drawable.rounded_edit_text)
+        }
         text_score.text = "Score : $score"
         text_question_number.text = "${(questionId + 1)} / ${questions?.size}"
         currentQuestion = questions[questionId]
@@ -116,19 +120,20 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun checkAnswer(button: Button, answer: String) {
+        button.isClickable = false
         if (currentQuestion.correctAnswer.htmlDecode() == answer) {
             score += 10
             text_score.text = "Score : $score"
-            button.background.setTint(resources.getColor(R.color.secondaryDarkColor, theme))
+            button.background.setTint(resources.getColor(color.secondaryDarkColor, theme))
         } else {
-            button.background.setTint(resources.getColor(R.color.magenta, theme))
-            correctButton.background.setTint(resources.getColor(R.color.secondaryDarkColor, theme))
+            button.background.setTint(resources.getColor(color.magenta, theme))
+            correctButton.background.setTint(resources.getColor(color.secondaryDarkColor, theme))
         }
 
         val handler = Handler()
         handler.postDelayed({
-            button.background.setTint(resources.getColor(R.color.itemBackground, theme))
-            correctButton.background.setTint(resources.getColor(R.color.itemBackground, theme))
+            button.background.setTint(resources.getColor(color.primaryTextColor, theme))
+            correctButton.background.setTint(resources.getColor(color.primaryTextColor, theme))
             timer?.cancel()
             goToNextQuestion()
         }, 500)
@@ -163,7 +168,7 @@ class QuizActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == android.R.id.home){
+        if (item.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }
@@ -171,9 +176,17 @@ class QuizActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        timer?.cancel()
-        finish()
-        super.onBackPressed()
+        AlertDialog.Builder(this)
+            .setTitle("Warning")
+            .setMessage("Do you confirm that the quiz will be terminated?")
+            .setCancelable(true)
+            .setNegativeButton("Cancel") { dialog: DialogInterface, i: Int ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("Confirm") { dialogInterface: DialogInterface, i: Int ->
+                timer?.cancel()
+                finish()
+            }.show()
     }
 
     private fun showProgress() {

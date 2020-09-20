@@ -57,6 +57,10 @@ class ResultActivity : AppCompatActivity() {
         saveData()
         setupView()
 
+        text_score.setOnClickListener {
+            shareTextContent("${category.name}: $score", "Share Your Score")
+        }
+
         button_restart.setOnClickListener {
             val intent = QuizActivity.newIntent(this, category)
             startActivity(intent)
@@ -69,6 +73,7 @@ class ResultActivity : AppCompatActivity() {
         }
     }
 
+
     private fun setupView() {
         text_category.text = "Category\n${category.name}"
         if (score == 100) {
@@ -76,9 +81,19 @@ class ResultActivity : AppCompatActivity() {
         } else {
             text_gameOver.text = "GAME OVER!"
         }
-        text_score.text = "Your Score\n$score"
+        text_score.text = "    Your Score\n    $score"
         button_restart.text = "Play Again"
         button_backToMenu.text = "Select Category"
+    }
+
+    private fun shareTextContent(message: String, title: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, title)
+        startActivity(shareIntent)
     }
 
     private fun saveData() {

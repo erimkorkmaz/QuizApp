@@ -1,15 +1,13 @@
 package com.erimkorkmaz.quizapp.ui
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.erimkorkmaz.quizapp.R
-import com.erimkorkmaz.quizapp.utils.toolbarIcon
+import com.erimkorkmaz.quizapp.ui.messaging.MessagingActivity
 import com.erimkorkmaz.quizapp.utils.toolbarRightIcon
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
@@ -22,13 +20,13 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_common_toolbar.*
-import kotlinx.android.synthetic.main.layout_common_toolbar.view.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private val categoriesFragment = CategoriesFragment()
     private val leaderboardFragment = LeaderboardFragment()
+    private val profileFragment = ProfileFragment()
 
     var isConnected: Boolean = true
     val compositeDisposable = CompositeDisposable()
@@ -38,13 +36,15 @@ class MainActivity : AppCompatActivity() {
             val fragment = when (item.itemId) {
                 R.id.navigation_categories -> {
                     toolbarTitle("CATEGORIES")
-                    title = "Categories"
                     categoriesFragment
                 }
                 R.id.navigation_leaderboard -> {
-                   toolbarTitle("LEADERBOARD")
-                    title = "Leaderboard"
+                    toolbarTitle("LEADERBOARD")
                     leaderboardFragment
+                }
+                R.id.navigation_profile -> {
+                    toolbarTitle("PROFILE")
+                    profileFragment
                 }
                 else -> categoriesFragment
             }
@@ -60,10 +60,8 @@ class MainActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         if (savedInstanceState == null)
             switchToFragment(categoriesFragment)
-        setSupportActionBar(toolbar_common)
         checkConnectivity()
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater = menuInflater
@@ -74,8 +72,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.logout) {
             auth.signOut()
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, RegisterActivity::class.java))
             finish()
         }
         return super.onOptionsItemSelected(item)
@@ -84,6 +81,15 @@ class MainActivity : AppCompatActivity() {
     private fun switchToFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.main_container, fragment).commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        toolbarRightIcon(R.drawable.ic_round_message)
+        image_toolbar_right_common.setOnClickListener {
+            startActivity(Intent(this, MessagingActivity::class.java))
+        }
+
     }
 
     private fun checkConnectivity() {

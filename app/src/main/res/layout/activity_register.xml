@@ -17,7 +17,10 @@
         android:id="@+id/layout_register"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="50dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,39 +31,51 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_username"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/rounded_edit_text"
             android:gravity="center"
-            android:hint="username"
-            android:textColor="@color/secondaryLightColor"
-            android:textColorHint="@color/itemBackground" />
+            android:hint="username" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_edit_text"
             android:gravity="center"
             android:hint="email"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/secondaryLightColor"
-            android:textColorHint="@color/itemBackground" />
+            android:inputType="textEmailAddress" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text_password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_edit_text"
             android:gravity="center"
             android:hint="password"
-            android:inputType="textPassword"
-            android:textColor="@color/secondaryLightColor"
-            android:textColorHint="@color/itemBackground" />
+            android:inputType="textPassword" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_register"
-            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_register_button"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
             android:text="register" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_have_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Already have an account?"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
