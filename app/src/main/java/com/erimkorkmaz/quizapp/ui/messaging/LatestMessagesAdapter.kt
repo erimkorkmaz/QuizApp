@@ -12,8 +12,7 @@ import com.erimkorkmaz.quizapp.model.ChatMessage
 import kotlinx.android.synthetic.main.list_item_last_messages.view.*
 
 class LatestMessagesAdapter(
-    private val chatMessages: MutableList<ChatMessage>,
-    private val userId: String,
+    private val latestMessagesMap: HashMap<String, ChatMessage>,
     private val userImageUrl: String
 ) :
     RecyclerView.Adapter<LatestMessagesAdapter.ViewHolder>() {
@@ -27,10 +26,14 @@ class LatestMessagesAdapter(
         )
     }
 
-    override fun getItemCount() = chatMessages.size
+    override fun getItemCount() = latestMessagesMap.size
 
     override fun onBindViewHolder(holder: LatestMessagesAdapter.ViewHolder, position: Int) {
-        holder.bind(chatMessages[position], userImageUrl, userId)
+        holder.bind(
+            latestMessagesMap.values.elementAt(position),
+            userImageUrl,
+            latestMessagesMap.keys.elementAt(position)
+        )
     }
 
     inner class ViewHolder(

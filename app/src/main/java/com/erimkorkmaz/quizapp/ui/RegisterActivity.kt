@@ -6,7 +6,6 @@ import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.erimkorkmaz.quizapp.ModelPreferencesManager
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.model.User
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
@@ -99,7 +98,6 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun saveUserToDb(username: String) {
         val user = User(auth.currentUser!!.uid, auth.currentUser!!.email.toString(), username)
-        ModelPreferencesManager.put(user, "KEY_USER")
         db.collection("Users").document(auth.currentUser!!.uid).set(user)
             .addOnSuccessListener { Log.d("TAG", "DocumentSnapshot successfully written!") }
             .addOnFailureListener { e -> Log.w("TAG", "Error writing document", e) }

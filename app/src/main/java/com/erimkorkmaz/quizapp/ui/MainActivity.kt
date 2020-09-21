@@ -2,11 +2,14 @@ package com.erimkorkmaz.quizapp.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.erimkorkmaz.quizapp.ModelPreferencesManager
 import com.erimkorkmaz.quizapp.R
+import com.erimkorkmaz.quizapp.model.User
 import com.erimkorkmaz.quizapp.ui.messaging.MessagingActivity
 import com.erimkorkmaz.quizapp.utils.toolbarRightIcon
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
@@ -14,6 +17,8 @@ import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -24,6 +29,7 @@ import kotlinx.android.synthetic.main.layout_common_toolbar.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
     private val categoriesFragment = CategoriesFragment()
     private val leaderboardFragment = LeaderboardFragment()
     private val profileFragment = ProfileFragment()
@@ -57,7 +63,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         toolbarTitle("CATEGORIES")
         auth = Firebase.auth
+        db = Firebase.firestore
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        saveUserToSharedPreferences()
         if (savedInstanceState == null)
             switchToFragment(categoriesFragment)
         checkConnectivity()
@@ -90,6 +98,30 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, MessagingActivity::class.java))
         }
 
+    }
+
+    private fun saveUserToSharedPreferences() {
+        val user = ModelPreferencesManager.get<User>("KEY_USER")
+        if (user == null) {
+            val docUser = db.collection("Users").document(auth.currentUser?.uid!!)
+            docUser.get().addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d("TAG", "DocumentSnapshot data: ${document.data}")
+                    val userModel = User(
+                        document.data!!["uid"].toString(),
+                        document.data!!["email"].toString(),
+                        document.data!!["userName"].toString(),
+                        document.data!!["profileImageUrl"].toString()
+                    )
+                    ModelPreferencesManager.put(userModel, "KEY_USER")
+                } else {
+                    Log.d("TAG", "No such document")
+                }
+
+            }.addOnFailureListener { exception ->
+                Log.d("TAG", "get failed with ", exception)
+            }
+        }
     }
 
     private fun checkConnectivity() {

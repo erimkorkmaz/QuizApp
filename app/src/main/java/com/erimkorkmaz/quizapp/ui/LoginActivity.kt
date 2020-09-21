@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.erimkorkmaz.quizapp.ModelPreferencesManager
 import com.erimkorkmaz.quizapp.R
-import com.erimkorkmaz.quizapp.model.User
 import com.erimkorkmaz.quizapp.utils.toolbarIcon
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
@@ -54,12 +52,6 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = User(
-                        auth.currentUser!!.uid,
-                        auth.currentUser!!.email.toString(),
-                        auth.currentUser?.displayName.toString()
-                    )
-                    ModelPreferencesManager.put(user, "KEY_USER")
                     val intent = Intent(this, MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)

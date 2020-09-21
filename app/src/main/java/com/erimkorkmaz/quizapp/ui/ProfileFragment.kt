@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.erimkorkmaz.quizapp.ModelPreferencesManager
 import com.erimkorkmaz.quizapp.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -30,6 +31,7 @@ class ProfileFragment : Fragment() {
 
         button_logout.setOnClickListener {
             auth.signOut()
+            ModelPreferencesManager.preferences.edit().clear().apply()
             startActivity(Intent(context, RegisterActivity::class.java))
             requireActivity().finish()
         }
