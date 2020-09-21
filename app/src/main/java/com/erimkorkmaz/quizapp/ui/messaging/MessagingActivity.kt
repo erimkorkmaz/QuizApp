@@ -25,7 +25,6 @@ class MessagingActivity : AppCompatActivity() {
             if (currentFragment is ChatLogFragment) {
                 chatLogFragment = currentFragment
             }
-
             if (latestMessagesFragment.isVisible) {
                 toolbarRightIconClicked()
             }
@@ -43,7 +42,6 @@ class MessagingActivity : AppCompatActivity() {
                 finish()
             }
         }
-
     }
 
     private fun toolbarRightIconClicked() {

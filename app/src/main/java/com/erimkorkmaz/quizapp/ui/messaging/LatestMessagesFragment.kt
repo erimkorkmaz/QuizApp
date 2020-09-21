@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.model.ChatMessage
+import com.erimkorkmaz.quizapp.model.User
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -17,7 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class LatestMessagesFragment : Fragment() {
+class LatestMessagesFragment : Fragment(), NewMessageItemClickListener {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
@@ -46,6 +47,12 @@ class LatestMessagesFragment : Fragment() {
         toolbarTitle("MESSAGES")
     }
 
+    override fun userItemClicked(user: User) {
+        (activity as MessagingActivity).switchToFragment(
+            ChatLogFragment.newInstance(user)
+        )
+    }
+
     private fun listenForLatestMessages() {
         val latestMessagesMap = HashMap<String, ChatMessage>()
         db.collection("Users").document(auth.currentUser?.uid!!).collection("LatestMessages")
@@ -54,8 +61,6 @@ class LatestMessagesFragment : Fragment() {
                     Log.w("TAG", "listen:error", error)
                     return@addSnapshotListener
                 }
-                var chatPartnerName: String? = null
-                var partnerImageUrl = "abcd"
                 for (dc in snapshots!!.documentChanges) {
                     when (dc.type) {
                         DocumentChange.Type.ADDED -> {
@@ -67,14 +72,7 @@ class LatestMessagesFragment : Fragment() {
                                 dc.document["fromUsername"].toString(),
                                 dc.document["toUsername"].toString()
                             )
-                            if (chatMessage.fromId == auth.currentUser?.uid!!) {
-                                chatPartnerName = chatMessage.toUsername
-                                partnerImageUrl = getPartnerUserImageUrl(chatMessage.toId)
-                            } else {
-                                chatPartnerName = chatMessage.fromUsername
-                                partnerImageUrl = getPartnerUserImageUrl(chatMessage.fromId)
-                            }
-                            latestMessagesMap[chatPartnerName] = chatMessage
+                            latestMessagesMap[getPartnerId(chatMessage)] = chatMessage
                         }
                         DocumentChange.Type.MODIFIED -> {
                             val chatMessage = ChatMessage(
@@ -85,31 +83,41 @@ class LatestMessagesFragment : Fragment() {
                                 dc.document["fromUsername"].toString(),
                                 dc.document["toUsername"].toString()
                             )
-                            if (chatMessage.fromId == auth.currentUser?.uid!!) {
-                                chatPartnerName = chatMessage.toUsername
-                                partnerImageUrl = getPartnerUserImageUrl(chatMessage.toId)
-                            } else {
-                                chatPartnerName = chatMessage.fromUsername
-                                partnerImageUrl = getPartnerUserImageUrl(chatMessage.fromId)
-                            }
-                            latestMessagesMap[chatPartnerName] = chatMessage
+                            latestMessagesMap[getPartnerId(chatMessage)] = chatMessage
                         }
                     }
                 }
-                latestMessagesAdapter =
-                    LatestMessagesAdapter(latestMessagesMap, "")
-                recyclerLatestMessages?.adapter = latestMessagesAdapter
-                latestMessagesAdapter.notifyDataSetChanged()
+                orderLatestMessages(latestMessagesMap)
             }
     }
 
-    private fun getPartnerUserImageUrl(partnerId: String): String {
-        var partnerImageUrl = "abc"
-        val docUser = db.collection("Users").document(partnerId)
-        docUser.get().addOnSuccessListener {
-            partnerImageUrl = it.data!!["profileImageUrl"].toString()
-
+    private fun getPartnerId(chatMessage: ChatMessage): String {
+        return if (chatMessage.fromId == auth.currentUser?.uid!!) {
+            chatMessage.toId
+        } else {
+            chatMessage.fromId
         }
-        return partnerImageUrl
+    }
+
+    private fun orderLatestMessages(map: HashMap<String, ChatMessage>) {
+        val latestMessagesPairList = ArrayList<Pair<User, ChatMessage>>()
+        var user: User
+        db.collection("Users").get().addOnSuccessListener { result ->
+            for (document in result.documents) {
+                for ((userId, chatMessage) in map) {
+                    if (document["uid"] == userId) {
+                        user = User(
+                            document["uid"].toString(),
+                            document["email"].toString(),
+                            document["userName"].toString(),
+                            document["profileImageUrl"].toString()
+                        )
+                        latestMessagesPairList.add(Pair(user, chatMessage))
+                    }
+                }
+            }
+            latestMessagesAdapter = LatestMessagesAdapter(this, latestMessagesPairList)
+            recyclerLatestMessages?.adapter = latestMessagesAdapter
+        }
     }
 }

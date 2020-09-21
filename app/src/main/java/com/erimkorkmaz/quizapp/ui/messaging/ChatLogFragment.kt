@@ -11,6 +11,7 @@ import com.erimkorkmaz.quizapp.ModelPreferencesManager
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.model.ChatMessage
 import com.erimkorkmaz.quizapp.model.User
+import com.erimkorkmaz.quizapp.utils.hideToolbarRightIcon
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -65,6 +66,7 @@ class ChatLogFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         toolbarTitle(toUser.userName)
+        hideToolbarRightIcon()
     }
 
     private fun listenForMessage() {

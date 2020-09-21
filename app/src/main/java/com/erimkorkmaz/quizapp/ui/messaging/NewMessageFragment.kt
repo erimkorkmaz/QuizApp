@@ -40,18 +40,19 @@ class NewMessageFragment : Fragment(), NewMessageItemClickListener {
 
     override fun onResume() {
         super.onResume()
-        toolbarTitle("SELECT USER")
+        toolbarTitle("Send Messages to")
         hideToolbarRightIcon()
     }
 
     override fun userItemClicked(user: User) {
+        requireActivity().supportFragmentManager.popBackStack()
         (activity as MessagingActivity).switchToFragment(
             ChatLogFragment.newInstance(user)
         )
     }
 
     private fun fetchUsers() {
-        var users = mutableListOf<User>()
+        val users = mutableListOf<User>()
         db.collection("Users")
             .get()
             .addOnSuccessListener { result ->
