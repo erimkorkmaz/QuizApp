@@ -11,6 +11,7 @@ import com.erimkorkmaz.quizapp.ModelPreferencesManager
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.model.ChatMessage
 import com.erimkorkmaz.quizapp.model.User
+import com.erimkorkmaz.quizapp.utils.convertMapToPOJO
 import com.erimkorkmaz.quizapp.utils.hideToolbarRightIcon
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
@@ -80,15 +81,11 @@ class ChatLogFragment : Fragment() {
                 for (dc in snapshots!!.documentChanges) {
                     when (dc.type) {
                         DocumentChange.Type.ADDED -> {
-                            val chatMessage = ChatMessage(
-                                dc.document["text"].toString(),
-                                dc.document["fromId"].toString(),
-                                dc.document["toId"].toString(),
-                                dc.document["timeStamp"].toString(),
-                                dc.document["fromUsername"].toString(),
-                                dc.document["toUsername"].toString()
+                            val chatMessage = convertMapToPOJO(
+                                dc.document.data,
+                                ChatMessage::class.java
                             )
-                            chatMessages.add(chatMessage)
+                            chatMessages.add(chatMessage as ChatMessage)
                         }
                     }
 
@@ -96,13 +93,11 @@ class ChatLogFragment : Fragment() {
                 chatLogAdapter = ChatLogAdapter(
                     chatMessages,
                     toUser,
-                    auth.currentUser?.uid!!,
-                    ""
+                    user!!
                 )
                 recyclerChatLog?.adapter = chatLogAdapter
                 recyclerChatLog?.scrollToPosition(chatLogAdapter.itemCount - 1)
             }
-
     }
 
     private fun performSendMessage() {

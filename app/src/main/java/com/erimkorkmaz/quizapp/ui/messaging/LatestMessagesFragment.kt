@@ -5,11 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.model.ChatMessage
 import com.erimkorkmaz.quizapp.model.User
+import com.erimkorkmaz.quizapp.utils.convertMapToPOJO
 import com.erimkorkmaz.quizapp.utils.toolbarTitle
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -17,6 +20,7 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_latest_messages.*
 
 class LatestMessagesFragment : Fragment(), NewMessageItemClickListener {
 
@@ -39,6 +43,10 @@ class LatestMessagesFragment : Fragment(), NewMessageItemClickListener {
         db = Firebase.firestore
         recyclerLatestMessages =
             requireActivity().findViewById(R.id.recycler_latest_messages) as RecyclerView
+        val divider =
+            DividerItemDecoration(recyclerLatestMessages!!.context, DividerItemDecoration.VERTICAL);
+        divider.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.custom_divider)!!);
+        recyclerLatestMessages!!.addItemDecoration(divider)
         listenForLatestMessages()
     }
 
@@ -54,6 +62,7 @@ class LatestMessagesFragment : Fragment(), NewMessageItemClickListener {
     }
 
     private fun listenForLatestMessages() {
+        showProgress()
         val latestMessagesMap = HashMap<String, ChatMessage>()
         db.collection("Users").document(auth.currentUser?.uid!!).collection("LatestMessages")
             .addSnapshotListener { snapshots, error ->
@@ -64,26 +73,20 @@ class LatestMessagesFragment : Fragment(), NewMessageItemClickListener {
                 for (dc in snapshots!!.documentChanges) {
                     when (dc.type) {
                         DocumentChange.Type.ADDED -> {
-                            val chatMessage = ChatMessage(
-                                dc.document["text"].toString(),
-                                dc.document["fromId"].toString(),
-                                dc.document["toId"].toString(),
-                                dc.document["timeStamp"].toString(),
-                                dc.document["fromUsername"].toString(),
-                                dc.document["toUsername"].toString()
+                            val chatMessage = convertMapToPOJO(
+                                dc.document.data,
+                                ChatMessage::class.java
                             )
-                            latestMessagesMap[getPartnerId(chatMessage)] = chatMessage
+                            latestMessagesMap[getPartnerId(chatMessage as ChatMessage)] =
+                                chatMessage
                         }
                         DocumentChange.Type.MODIFIED -> {
-                            val chatMessage = ChatMessage(
-                                dc.document["text"].toString(),
-                                dc.document["fromId"].toString(),
-                                dc.document["toId"].toString(),
-                                dc.document["timeStamp"].toString(),
-                                dc.document["fromUsername"].toString(),
-                                dc.document["toUsername"].toString()
+                            val chatMessage = convertMapToPOJO(
+                                dc.document.data,
+                                ChatMessage::class.java
                             )
-                            latestMessagesMap[getPartnerId(chatMessage)] = chatMessage
+                            latestMessagesMap[getPartnerId(chatMessage as ChatMessage)] =
+                                chatMessage
                         }
                     }
                 }
@@ -106,18 +109,32 @@ class LatestMessagesFragment : Fragment(), NewMessageItemClickListener {
             for (document in result.documents) {
                 for ((userId, chatMessage) in map) {
                     if (document["uid"] == userId) {
-                        user = User(
-                            document["uid"].toString(),
-                            document["email"].toString(),
-                            document["userName"].toString(),
-                            document["profileImageUrl"].toString()
-                        )
+                        user =
+                            convertMapToPOJO(document.data!!, User::class.java) as User
                         latestMessagesPairList.add(Pair(user, chatMessage))
                     }
                 }
             }
             latestMessagesAdapter = LatestMessagesAdapter(this, latestMessagesPairList)
             recyclerLatestMessages?.adapter = latestMessagesAdapter
+            hideProgress()
+        }
+    }
+
+    private fun showProgress() {
+        if (progress_latest_messages != null) {
+            progress_latest_messages.visibility = View.VISIBLE
+            progress_latest_messages.setAnimation("loading.json")
+            progress_latest_messages.playAnimation()
+            progress_latest_messages.loop(true)
+            recyclerLatestMessages?.visibility = View.GONE
+        }
+    }
+
+    private fun hideProgress() {
+        if (progress_latest_messages != null) {
+            progress_latest_messages.visibility = View.GONE
+            recyclerLatestMessages?.visibility = View.VISIBLE
         }
     }
 }

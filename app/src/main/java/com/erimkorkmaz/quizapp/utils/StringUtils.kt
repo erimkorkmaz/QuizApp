@@ -1,8 +1,5 @@
 package com.erimkorkmaz.quizapp.utils
 
-import android.util.Base64
-import androidx.core.text.HtmlCompat
-
 
 object StringUtils {
 

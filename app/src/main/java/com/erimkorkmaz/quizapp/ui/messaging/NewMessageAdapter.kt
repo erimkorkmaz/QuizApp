@@ -5,11 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.model.User
+import com.erimkorkmaz.quizapp.utils.makeCircularAnonymousImage
 import kotlinx.android.synthetic.main.item_new_message_users.view.*
+
 
 class NewMessageAdapter(
     private val listener: NewMessageItemClickListener,
@@ -48,10 +49,19 @@ class NewMessageAdapter(
             itemView.text_new_message.text = user.userName
             Glide.with(itemView.context)
                 .load(user.profileImageUrl).apply(
-                    RequestOptions().centerCrop().transform(RoundedCorners(64))
-                    //     .placeholder(R.drawable.ic_image_place_holder)
-                    //     .error(R.drawable.ic_broken_image)
-                    //     .fallback(R.drawable.ic_no_image)
+                    RequestOptions().circleCrop()
+                        .placeholder(
+                            makeCircularAnonymousImage(
+                                itemView.context,
+                                R.drawable.ic_anonymous
+                            )
+                        )
+                        .error(
+                            makeCircularAnonymousImage(
+                                itemView.context,
+                                R.drawable.ic_anonymous
+                            )
+                        )
                 )
                 .into(itemView.image_new_message)
         }

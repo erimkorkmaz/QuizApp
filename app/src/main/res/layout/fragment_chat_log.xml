@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/primaryLightColor">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_chat_log"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
         android:background="@color/primaryLightColor"
+        android:paddingBottom="4dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/edittext_chat_log"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,9 +24,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@android:color/white"
+        android:background="@drawable/rounded_edit_text"
         android:hint="Enter Message"
         android:inputType="textPersonName"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_send_chat_log"
         app:layout_constraintStart_toStartOf="parent" />
@@ -43,6 +44,5 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

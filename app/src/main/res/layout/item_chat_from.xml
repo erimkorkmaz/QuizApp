@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,9 +11,11 @@
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/circle"
+        android:padding="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/history" />
+        tools:srcCompat="@drawable/history" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_chat_from"
@@ -22,8 +25,8 @@
         android:background="@drawable/rounded_edit_text"
         android:maxWidth="240dp"
         android:padding="16dp"
-        android:text="This is my message that will wrap into multiple lines and keep on going"
         app:layout_constraintEnd_toStartOf="@+id/image_chat_from"
-        app:layout_constraintTop_toTopOf="@+id/image_chat_from" />
+        app:layout_constraintTop_toTopOf="@+id/image_chat_from"
+        tools:text="This is my message that will wrap into multiple lines and keep on going" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

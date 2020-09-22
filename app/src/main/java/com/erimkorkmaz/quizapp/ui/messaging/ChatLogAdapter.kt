@@ -4,17 +4,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.model.ChatMessage
 import com.erimkorkmaz.quizapp.model.User
+import com.erimkorkmaz.quizapp.utils.makeCircularAnonymousImage
 import kotlinx.android.synthetic.main.item_chat_from.view.*
 import kotlinx.android.synthetic.main.item_chat_to.view.*
 
 class ChatLogAdapter(
     private val chatMessages: MutableList<ChatMessage>,
     private val toUser: User,
-    private val fromUserId: String,
-    private val fromUserImageUrl: String
+    private val fromUser: User
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -35,13 +37,16 @@ class ChatLogAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is FromUserViewHolder -> holder.bind(orderChatMessages()[position], fromUserImageUrl)
+            is FromUserViewHolder -> holder.bind(
+                orderChatMessages()[position],
+                fromUser.profileImageUrl!!
+            )
             is ToUserViewHolder -> holder.bind(orderChatMessages()[position], toUser)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (orderChatMessages()[position].fromId == fromUserId) 1 else 0
+        return if (orderChatMessages()[position].fromId == fromUser.uid) 1 else 0
     }
 
     private fun orderChatMessages(): MutableList<ChatMessage> {
@@ -54,11 +59,35 @@ class ChatLogAdapter(
 class FromUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(chatMessage: ChatMessage, fromUserImageUrl: String) {
         itemView.text_chat_from.text = chatMessage.text
+        Glide.with(itemView.context)
+            .load(fromUserImageUrl).apply(
+                RequestOptions().circleCrop()
+                    .placeholder(
+                        makeCircularAnonymousImage(
+                            itemView.context,
+                            R.drawable.ic_anonymous
+                        )
+                    )
+                    .error(makeCircularAnonymousImage(itemView.context, R.drawable.ic_anonymous))
+            )
+            .into(itemView.image_chat_from)
     }
 }
 
 class ToUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(chatMessage: ChatMessage, toUser: User) {
         itemView.text_chat_to.text = chatMessage.text
+        Glide.with(itemView.context)
+            .load(toUser.profileImageUrl).apply(
+                RequestOptions().circleCrop()
+                    .placeholder(
+                        makeCircularAnonymousImage(
+                            itemView.context,
+                            R.drawable.ic_anonymous
+                        )
+                    )
+                    .error(makeCircularAnonymousImage(itemView.context, R.drawable.ic_anonymous))
+            )
+            .into(itemView.image_chat_to)
     }
 }

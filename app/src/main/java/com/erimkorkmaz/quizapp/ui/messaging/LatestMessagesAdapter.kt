@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.erimkorkmaz.quizapp.R
 import com.erimkorkmaz.quizapp.model.ChatMessage
 import com.erimkorkmaz.quizapp.model.User
+import com.erimkorkmaz.quizapp.utils.makeCircularAnonymousImage
 import kotlinx.android.synthetic.main.list_item_last_messages.view.*
 
 class LatestMessagesAdapter(
@@ -57,9 +57,19 @@ class LatestMessagesAdapter(
             itemView.text_latest_message.text = chatMessage.text
             Glide.with(itemView.context)
                 .load(user.profileImageUrl).apply(
-                    RequestOptions().centerCrop().transform(RoundedCorners(64))
-                    //   .placeholder(R.drawable.art)
-                    //    .error(R.drawable.art)
+                    RequestOptions().circleCrop()
+                        .placeholder(
+                            makeCircularAnonymousImage(
+                                itemView.context,
+                                R.drawable.ic_anonymous
+                            )
+                        )
+                        .error(
+                            makeCircularAnonymousImage(
+                                itemView.context,
+                                R.drawable.ic_anonymous
+                            )
+                        )
                 )
                 .into(itemView.image_latest_messages)
         }
