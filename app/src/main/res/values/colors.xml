@@ -14,4 +14,5 @@
     <color name="secondaryTextColor">#000000</color>
     <color name="magenta">#ad1457</color>
     <color name="itemBackground">#D6D7D7</color>
+    <color name="graylight">#d3d3d3</color>
 </resources>

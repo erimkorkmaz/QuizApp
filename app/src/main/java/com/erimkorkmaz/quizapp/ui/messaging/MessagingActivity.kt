@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.layout_common_toolbar.view.*
 class MessagingActivity : AppCompatActivity() {
 
     private val latestMessagesFragment = LatestMessagesFragment()
-    private val newMessageFragment = NewMessageFragment()
+    private var newMessageFragment = NewMessageFragment()
     private var chatLogFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +24,9 @@ class MessagingActivity : AppCompatActivity() {
             val currentFragment = supportFragmentManager.findFragmentById(R.id.main_container)
             if (currentFragment is ChatLogFragment) {
                 chatLogFragment = currentFragment
+            }
+            if (currentFragment is NewMessageFragment) {
+                newMessageFragment = currentFragment
             }
             if (latestMessagesFragment.isVisible) {
                 toolbarRightIconClicked()

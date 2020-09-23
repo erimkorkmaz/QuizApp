@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_latest_messages.*
+import kotlinx.android.synthetic.main.layout_no_messages.*
 
 class LatestMessagesFragment : Fragment(), NewMessageItemClickListener {
 
@@ -48,6 +49,9 @@ class LatestMessagesFragment : Fragment(), NewMessageItemClickListener {
         divider.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.custom_divider)!!);
         recyclerLatestMessages!!.addItemDecoration(divider)
         listenForLatestMessages()
+        button_no_messages.setOnClickListener {
+            (activity as MessagingActivity).switchToFragment(NewMessageFragment())
+        }
     }
 
     override fun onResume() {
@@ -118,6 +122,9 @@ class LatestMessagesFragment : Fragment(), NewMessageItemClickListener {
             latestMessagesAdapter = LatestMessagesAdapter(this, latestMessagesPairList)
             recyclerLatestMessages?.adapter = latestMessagesAdapter
             hideProgress()
+            if (latestMessagesPairList.isEmpty() && included_layout_no_messages != null) {
+                included_layout_no_messages.visibility = View.VISIBLE
+            }
         }
     }
 

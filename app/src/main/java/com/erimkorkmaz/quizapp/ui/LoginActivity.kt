@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val email = text_email.text.toString()
+        val email = text_profile_email.text.toString()
         val password = text_password.text.toString()
         if (email.isEmpty()) {
             Toast.makeText(this, "Email is empty", Toast.LENGTH_SHORT).show()

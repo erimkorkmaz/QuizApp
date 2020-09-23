@@ -87,17 +87,21 @@ class LeaderboardFragment : Fragment(), CategoryClickListener {
     }
 
     private fun showProgress() {
-        progress_leaderboard.visibility = View.VISIBLE
-        progress_leaderboard.setAnimation("loading.json")
-        progress_leaderboard.playAnimation()
-        progress_leaderboard.loop(true)
-        recycler_categories.visibility = View.GONE
-        recycler_leaderboard.visibility = View.GONE
+        if (progress_leaderboard != null) {
+            progress_leaderboard.visibility = View.VISIBLE
+            progress_leaderboard.setAnimation("loading.json")
+            progress_leaderboard.playAnimation()
+            progress_leaderboard.loop(true)
+            recycler_categories.visibility = View.GONE
+            recycler_leaderboard.visibility = View.GONE
+        }
     }
 
     private fun hideProgress() {
-        progress_leaderboard.visibility = View.GONE
-        recycler_categories.visibility = View.VISIBLE
-        recycler_leaderboard.visibility = View.VISIBLE
+        if (progress_leaderboard != null) {
+            progress_leaderboard.visibility = View.GONE
+            recycler_categories.visibility = View.VISIBLE
+            recycler_leaderboard.visibility = View.VISIBLE
+        }
     }
 }

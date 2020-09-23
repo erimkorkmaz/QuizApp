@@ -52,7 +52,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun register() {
-        val email = text_email.text.toString().trim()
+        val email = text_profile_email.text.toString().trim()
         val username = text_username.text.toString().trim()
         val password = text_password.text.toString().trim()
 
@@ -63,8 +63,8 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            text_email.error = "Please enter valid email"
-            text_email.requestFocus()
+            text_profile_email.error = "Please enter valid email"
+            text_profile_email.requestFocus()
             return
         }
 
