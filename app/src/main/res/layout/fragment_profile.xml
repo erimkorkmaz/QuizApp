@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryLightColor"
-    android:orientation="vertical">
+    android:fillViewport="true">
 
-
-    <include
-        layout="@layout/layout_card_profile"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="24dp" />
+        android:background="@color/primaryLightColor"
+        android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_logout"
-        android:layout_width="196dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="48dp"
-        android:background="@drawable/rounded_register_button"
-        android:padding="16dp"
-        android:text="Logout"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textSize="16sp" />
-</LinearLayout>
+        <include
+            layout="@layout/layout_card_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="24dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_logout"
+            android:layout_width="196dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_register_button"
+            android:padding="16dp"
+            android:text="Logout"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</ScrollView>

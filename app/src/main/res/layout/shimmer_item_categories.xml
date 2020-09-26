@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_category"
+        android:layout_width="300dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/rounded_corner"
+        android:padding="4dp" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -61,7 +61,6 @@ class ProfileFragment : Fragment() {
         img_profile.setOnClickListener {
             selectImage()
         }
-
         button_logout.setOnClickListener {
             logout()
         }
@@ -169,8 +168,8 @@ class ProfileFragment : Fragment() {
     }
 
     private fun logout() {
-        auth.signOut()
         ModelPreferencesManager.preferences.edit().clear().apply()
+        auth.signOut()
         startActivity(Intent(context, RegisterActivity::class.java))
         requireActivity().finish()
     }

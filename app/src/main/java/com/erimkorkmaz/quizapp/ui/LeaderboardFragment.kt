@@ -10,15 +10,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.erimkorkmaz.quizapp.R
+import com.erimkorkmaz.quizapp.listeners.OnSnapPositionChangeListener
+import com.erimkorkmaz.quizapp.listeners.SnapOnScrollListener
+import com.erimkorkmaz.quizapp.model.User
+import com.erimkorkmaz.quizapp.utils.attachSnapHelperWithListener
+import com.erimkorkmaz.quizapp.utils.convertMapToPOJO
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_leaderboard.*
 
-class LeaderboardFragment : Fragment(), CategoryClickListener {
+class LeaderboardFragment : Fragment(), OnSnapPositionChangeListener {
     private lateinit var db: FirebaseFirestore
     private lateinit var leaderboardAdapter: LeaderboardAdapter
     private lateinit var categoryAdapter: LeaderboardAdapter
+    private var userListForCategoryName = arrayListOf<Triple<User, String, Int>>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,73 +42,82 @@ class LeaderboardFragment : Fragment(), CategoryClickListener {
             LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         recycler_leaderboard.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        loadCategoryAdapter()
-        loadLeaderboardAdapter()
+        retrieveData()
         val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(recycler_categories)
+        recycler_categories.attachSnapHelperWithListener(
+            snapHelper,
+            SnapOnScrollListener.Behavior.NOTIFY_ON_SCROLL_STATE_IDLE,
+            this
+        )
+    }
+
+    override fun onSnapPositionChange(position: Int) {
+        val category = categoryNameFromPosition(position)
+        leaderboardAdapter = LeaderboardAdapter(userListForCategoryName, false, category)
+        recycler_leaderboard.adapter = leaderboardAdapter
     }
 
     private fun loadCategoryAdapter() {
-        categoryAdapter = LeaderboardAdapter(this, retrieveData(), true, "")
+        categoryAdapter = LeaderboardAdapter(userListForCategoryName, true)
         recycler_categories.adapter = categoryAdapter
-        hideProgress()
+        categoryAdapter.notifyDataSetChanged()
     }
 
     private fun loadLeaderboardAdapter() {
-        leaderboardAdapter = LeaderboardAdapter(this, retrieveData(), false, "Animals")
+        leaderboardAdapter = LeaderboardAdapter(userListForCategoryName, false)
         recycler_leaderboard.adapter = leaderboardAdapter
+        leaderboardAdapter.notifyDataSetChanged()
+
     }
 
-    override fun onCategoryClicked(category: String) {
-        leaderboardAdapter = LeaderboardAdapter(this, retrieveData(), false, category)
-        recycler_leaderboard.adapter = leaderboardAdapter
-    }
-
-    private fun retrieveData(): ArrayList<Triple<String, String, Int>> {
-        showProgress()
-        val userList = arrayListOf<Triple<String, String, Int>>()
+    private fun retrieveData(): ArrayList<Triple<User, String, Int>> {
+        layout_shimmer.visibility = View.VISIBLE
+        val userList = arrayListOf<Triple<User, String, Int>>()
         db.collection("Users").get().addOnSuccessListener { querySnapshot ->
             val users = querySnapshot.documents
             for (user in users) {
                 db.collection("Users").document(user.id).collection("Scores").get()
                     .addOnSuccessListener {
                         val scores = it.documents
+                        val person = convertMapToPOJO(user.data!!, User::class.java)
                         for (score in scores) {
                             userList.add(
                                 Triple(
-                                    user["username"].toString(),
+                                    person as User,
                                     score.data?.keys.toString().drop(1).dropLast(1),
                                     score.data?.values.toString().drop(1).dropLast(1).toInt()
                                 )
                             )
-                            categoryAdapter.notifyDataSetChanged()
-                            leaderboardAdapter.notifyDataSetChanged()
                         }
+                        layout_shimmer.visibility = View.GONE
+                        userListForCategoryName = userList
+                        loadCategoryAdapter()
+                        loadLeaderboardAdapter()
                     }
             }
-            hideProgress()
         }.addOnFailureListener { exception ->
             Log.d("TAG", "get failed with ", exception)
         }
         return userList
     }
 
-    private fun showProgress() {
-        if (progress_leaderboard != null) {
-            progress_leaderboard.visibility = View.VISIBLE
-            progress_leaderboard.setAnimation("loading.json")
-            progress_leaderboard.playAnimation()
-            progress_leaderboard.loop(true)
-            recycler_categories.visibility = View.GONE
-            recycler_leaderboard.visibility = View.GONE
+    private fun categoryNameFromPosition(position: Int): String {
+        var categoryName = ""
+        val categories = arrayListOf<String>()
+        for (value in userListForCategoryName) {
+            categories.add(value.second)
         }
+        val sortedList = categories.distinct().sorted().toMutableList()
+        for (i in sortedList.indices) {
+            if (position == i) {
+                categoryName = sortedList[i]
+            }
+        }
+        return categoryName
     }
 
-    private fun hideProgress() {
-        if (progress_leaderboard != null) {
-            progress_leaderboard.visibility = View.GONE
-            recycler_categories.visibility = View.VISIBLE
-            recycler_leaderboard.visibility = View.VISIBLE
-        }
+    override fun onDestroyView() {
+        userListForCategoryName.clear()
+        super.onDestroyView()
     }
 }

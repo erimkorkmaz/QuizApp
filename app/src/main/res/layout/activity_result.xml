@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/primaryLightColor">
 
     <include
@@ -20,23 +20,23 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_edit_text"
         android:padding="16dp"
-        tools:text="GAME OVER!"
         android:textSize="32sp"
         app:layout_constraintBottom_toTopOf="@+id/layout_result"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/included_app_bar" />
+        app:layout_constraintTop_toBottomOf="@id/included_app_bar"
+        tools:text="GAME OVER!" />
 
 
     <LinearLayout
         android:id="@+id/layout_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_edit_text"
-        android:orientation="vertical"
-        android:gravity="center"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
+        android:background="@drawable/rounded_edit_text"
+        android:gravity="center"
+        android:orientation="vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/layout_buttons"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,19 +49,19 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:gravity="center"
-            tools:text="Category"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            tools:text="Category" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:gravity="center"
-            tools:text="Your Score"
-            android:drawablePadding="16dp"
             android:drawableEnd="@drawable/ic_baseline_share_24"
-            android:textSize="24sp" />
+            android:drawablePadding="16dp"
+            android:gravity="center"
+            android:textSize="24sp"
+            tools:text="Your Score" />
 
     </LinearLayout>
 
@@ -86,9 +86,10 @@
             android:background="@drawable/rounded_register_button"
             android:elevation="3dp"
             android:fontFamily="@font/manropemedium"
-            android:textColor="@android:color/white"
             android:padding="4dp"
-            android:text="Play Again" />
+            android:text="Play Again"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_backToMenu"
@@ -99,12 +100,12 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_register_button"
             android:elevation="3dp"
-            android:textColor="@android:color/white"
             android:fontFamily="@font/manropemedium"
             android:padding="4dp"
-            android:text="Select Category" />
+            android:text="Select Category"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

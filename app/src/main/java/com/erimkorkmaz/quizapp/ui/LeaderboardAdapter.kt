@@ -4,25 +4,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.erimkorkmaz.quizapp.R
+import com.erimkorkmaz.quizapp.model.User
 import com.erimkorkmaz.quizapp.utils.StringUtils
+import com.erimkorkmaz.quizapp.utils.makeCircularAnonymousImage
 import kotlinx.android.synthetic.main.item_categories.view.*
 import kotlinx.android.synthetic.main.list_item_leaderboard.view.*
-import kotlin.collections.ArrayList
 
 class LeaderboardAdapter(
-    private val listener: CategoryClickListener,
-    private val triple: ArrayList<Triple<String, String, Int>>,
+    private val triple: ArrayList<Triple<User, String, Int>>,
     private val isCategory: Boolean,
-    private val category: String
+    private val category: String? = "Animals"
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    val scoreBoard = hashMapOf<String, Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (isCategory) {
             CategoryViewHolder(
                 LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_categories, parent, false), listener
+                    .inflate(R.layout.item_categories, parent, false)
             )
         } else {
             LeaderboardViewHolder(
@@ -36,18 +37,18 @@ class LeaderboardAdapter(
         return if (isCategory) {
             getCategories().size
         } else {
-            getUserName().size
+            orderUsers().size
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is CategoryViewHolder -> holder.bind(getCategories()[position], position)
-            is LeaderboardViewHolder -> holder.bind(
-                position + 1,
-                getUserName()[position],
-                getScores()[position]
+            is CategoryViewHolder -> holder.bind(
+                getCategories()[position],
+                position,
+                getCategories().size
             )
+            is LeaderboardViewHolder -> holder.bind(orderUsers()[position])
         }
     }
 
@@ -59,75 +60,68 @@ class LeaderboardAdapter(
         return categories.distinct().sorted().toMutableList()
     }
 
-    private fun getUserName(): MutableList<String> {
-        val userNames = arrayListOf<String>()
+    private fun orderUsers(): MutableList<Pair<User, Int>> {
+        val scoreBoard = mutableListOf<Pair<User, Int>>()
         for (value in triple) {
             if (value.second == category) {
-                scoreBoard[value.first] = value.third
+                scoreBoard.add(Pair(value.first, value.third))
             }
         }
-        val sortedMap = scoreBoard.toSortedMap(compareByDescending { it })
-        for (name in sortedMap) {
-            userNames.add(name.key)
-        }
-        return userNames
-    }
-
-    private fun getScores(): MutableList<Int> {
-        val scores = arrayListOf<Int>()
-        val sortedMap = scoreBoard.toSortedMap(compareByDescending { it })
-        for (score in sortedMap) {
-            scores.add(score.value)
-        }
-        return scores
+        scoreBoard.distinct().sortedByDescending { it.second.toLong() }
+        return scoreBoard
     }
 }
 
-class CategoryViewHolder(itemView: View, private val listener: CategoryClickListener) :
-    RecyclerView.ViewHolder(itemView), View.OnClickListener {
+class CategoryViewHolder(itemView: View) :
+    RecyclerView.ViewHolder(itemView) {
     private lateinit var category: String
 
-    init {
-        itemView.setOnClickListener(this)
-    }
-
-    fun bind(category: String, position: Int) {
+    fun bind(category: String, position: Int, size: Int) {
         this.category = category
         itemView.text_category.text = StringUtils.formatCategoryNames(category)
-        if (position == 0) {
-            itemView.text_category.setCompoundDrawablesWithIntrinsicBounds(
-                null,
-                null,
-                itemView.context.getDrawable(R.drawable.ic_arrow_forward_black_24dp),
-                null
-            )
-        } else if (position == 23) {
-            itemView.text_category.setCompoundDrawablesWithIntrinsicBounds(
-                itemView.context.getDrawable(R.drawable.ic_arrow_back_black_24dp),
-                null,
-                null,
-                null
-            )
-        } else {
-            itemView.text_category.setCompoundDrawablesWithIntrinsicBounds(
-                itemView.context.getDrawable(R.drawable.ic_arrow_back_black_24dp),
-                null,
-                itemView.context.getDrawable(R.drawable.ic_arrow_forward_black_24dp),
-                null
-            )
+        when (position) {
+            0 -> {
+                itemView.text_category.setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    null,
+                    itemView.context.getDrawable(R.drawable.ic_arrow_forward_black_24dp),
+                    null
+                )
+            }
+            size - 1 -> {
+                itemView.text_category.setCompoundDrawablesWithIntrinsicBounds(
+                    itemView.context.getDrawable(R.drawable.ic_arrow_back_black_24dp),
+                    null,
+                    null,
+                    null
+                )
+            }
+            else -> {
+                itemView.text_category.setCompoundDrawablesWithIntrinsicBounds(
+                    itemView.context.getDrawable(R.drawable.ic_arrow_back_black_24dp),
+                    null,
+                    itemView.context.getDrawable(R.drawable.ic_arrow_forward_black_24dp),
+                    null
+                )
+            }
         }
 
-    }
-
-    override fun onClick(view: View) {
-        listener.onCategoryClicked(category)
     }
 }
 
 class LeaderboardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    fun bind(index: Int, username: String, score: Int) {
-        itemView.text_username.text = "$index. $username"
-        itemView.text_score.text = score.toString()
 
+    fun bind(user: Pair<User, Int>) {
+        Glide.with(itemView.context).load(user.first.profileImageUrl).apply(
+            RequestOptions().circleCrop().placeholder(
+                makeCircularAnonymousImage(
+                    itemView.context,
+                    R.drawable.ic_anonymous
+                )
+            )
+                .error(makeCircularAnonymousImage(itemView.context, R.drawable.ic_anonymous))
+        ).into(itemView.image_score_board_user)
+        itemView.text_username.text = user.first.userName
+        itemView.text_score.text = user.second.toString()
     }
 }

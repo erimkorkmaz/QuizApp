@@ -11,8 +11,7 @@
         android:layout_height="110dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/circle"
-        android:elevation="8dp"
-        android:scaleType="centerCrop" />
+        android:elevation="8dp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
