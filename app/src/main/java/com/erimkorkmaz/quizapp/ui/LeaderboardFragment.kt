@@ -1,7 +1,6 @@
 package com.erimkorkmaz.quizapp.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +56,35 @@ class LeaderboardFragment : Fragment(), OnSnapPositionChangeListener {
         recycler_leaderboard.adapter = leaderboardAdapter
     }
 
+    private fun retrieveData(): ArrayList<Triple<User, String, Int>> {
+        layout_shimmer.visibility = View.VISIBLE
+        val userList = arrayListOf<Triple<User, String, Int>>()
+        db.collection("Users").get().addOnSuccessListener { querySnapshot ->
+            val users = querySnapshot.documents
+            for (user in users) {
+                user.reference.collection("Scores").get().addOnSuccessListener {
+                    val scores = it.documents
+                    val person = convertMapToPOJO(user.data!!, User::class.java)
+                    for (score in scores) {
+                        userList.add(
+                            Triple(
+                                person as User,
+                                score.data?.keys.toString().drop(1).dropLast(1),
+                                score.data?.values.toString().drop(1).dropLast(1).toInt()
+                            )
+                        )
+                    }
+                    userListForCategoryName = userList
+                    layout_shimmer.visibility = View.GONE
+                    userListForCategoryName = userList
+                    loadCategoryAdapter()
+                    loadLeaderboardAdapter()
+                }
+            }
+        }
+        return userList
+    }
+
     private fun loadCategoryAdapter() {
         categoryAdapter = LeaderboardAdapter(userListForCategoryName, true)
         recycler_categories.adapter = categoryAdapter
@@ -67,38 +95,6 @@ class LeaderboardFragment : Fragment(), OnSnapPositionChangeListener {
         leaderboardAdapter = LeaderboardAdapter(userListForCategoryName, false)
         recycler_leaderboard.adapter = leaderboardAdapter
         leaderboardAdapter.notifyDataSetChanged()
-
-    }
-
-    private fun retrieveData(): ArrayList<Triple<User, String, Int>> {
-        layout_shimmer.visibility = View.VISIBLE
-        val userList = arrayListOf<Triple<User, String, Int>>()
-        db.collection("Users").get().addOnSuccessListener { querySnapshot ->
-            val users = querySnapshot.documents
-            for (user in users) {
-                db.collection("Users").document(user.id).collection("Scores").get()
-                    .addOnSuccessListener {
-                        val scores = it.documents
-                        val person = convertMapToPOJO(user.data!!, User::class.java)
-                        for (score in scores) {
-                            userList.add(
-                                Triple(
-                                    person as User,
-                                    score.data?.keys.toString().drop(1).dropLast(1),
-                                    score.data?.values.toString().drop(1).dropLast(1).toInt()
-                                )
-                            )
-                        }
-                        layout_shimmer.visibility = View.GONE
-                        userListForCategoryName = userList
-                        loadCategoryAdapter()
-                        loadLeaderboardAdapter()
-                    }
-            }
-        }.addOnFailureListener { exception ->
-            Log.d("TAG", "get failed with ", exception)
-        }
-        return userList
     }
 
     private fun categoryNameFromPosition(position: Int): String {

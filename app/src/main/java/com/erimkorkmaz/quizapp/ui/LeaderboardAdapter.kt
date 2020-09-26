@@ -67,7 +67,7 @@ class LeaderboardAdapter(
                 scoreBoard.add(Pair(value.first, value.third))
             }
         }
-        scoreBoard.distinct().sortedByDescending { it.second.toLong() }
+        scoreBoard.distinct().sortedByDescending { it.second }
         return scoreBoard
     }
 }
